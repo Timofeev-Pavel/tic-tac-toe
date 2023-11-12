@@ -1,0 +1,71 @@
+from tkinter import *
+window = Tk()
+window.title('Tic tac toe')
+window.geometry('300x300')
+canva = Canvas(window, height=300, width=300, bg='light blue')
+canva.pack()
+
+n = 3
+pole = [0] * 3
+isKrestik = True
+count = 0
+for i in range(n):
+    pole[i] = [0] * n
+
+def DrawSetka():
+    for i in range(n):
+        canva.create_line(0,100*i, 300,100*i, fill='black', width=5)
+        canva.create_line(100 * i, 0, 100 * i, 300, fill='black', width=5)
+def DrawKrestik(x,y):
+    canva.create_line(x*100+20,y*100+20, x*100+80,y*100+80, fill='midnight blue', width=5)
+    canva.create_line(x*100 + 80, y*100 + 20, x*100 + 20, y*100 + 80, fill='midnight blue', width=5)
+def DrawNolik(x,y):
+    canva.create_oval(x*100+20, y*100+20, x*100+80, y*100+80, outline='red', width=5)
+def Game(mouse):
+    global isKrestik
+    global count
+    x = mouse.x//100
+    y = mouse.y // 100
+    if pole[y][x] == 0:
+        count += 1
+        if isKrestik:
+            DrawKrestik(x, y)
+            pole[y][x] = 1
+        else:
+            DrawNolik(x, y)
+            pole[y][x] = 2
+        if IsWinner():
+            canva.create_rectangle(0,0,300,300, fill='light blue')
+            if isKrestik:
+                canva.create_text(150,150,text='Crosses won!', font='Impact 20')
+            else:
+                canva.create_text(150, 150, text='Noughts won!', font='Impact 21')
+        elif count == 9:
+            canva.create_rectangle(0, 0, 300, 300, fill='light blue')
+            canva.create_text(150, 150, text='Draw!', font='serif 50')
+    isKrestik = not isKrestik
+def IsWinner():
+    if pole[0][0] == pole[1][0] and pole[1][0] == pole[2][0] and pole[0][0] != 0:
+        return True
+    if pole[0][1] == pole[1][1] and pole[1][1] == pole[2][1] and pole[0][1] != 0:
+        return True
+    if pole[0][2] == pole[1][2] and pole[1][2] == pole[2][2] and pole[0][2] != 0:
+        return True
+
+    if pole[0][0] == pole[0][1] and pole[0][1] == pole[0][2] and pole[0][0] != 0:
+        return True
+    if pole[1][0] == pole[1][1] and pole[1][1] == pole[1][2] and pole[1][0] != 0:
+        return True
+    if pole[2][0] == pole[2][1] and pole[2][1] == pole[2][2] and pole[2][0] != 0:
+        return True
+
+    if pole[0][0] == pole[1][1] and pole[1][1] == pole[2][2] and pole[0][0] != 0:
+        return True
+    if pole[0][2] == pole[1][1] and pole[1][1] == pole[2][0] and pole[1][1] != 0:
+        return True
+    return False
+
+canva.bind('<Button-1>', Game)
+
+DrawSetka()
+window.mainloop()
